@@ -1,4 +1,4 @@
-package com.sebastian.springboot.backend.chat.app.services;
+/*package com.sebastian.springboot.backend.chat.app.services;
 
 import com.sebastian.springboot.backend.chat.app.models.Message;
 import org.springframework.stereotype.Service;
@@ -19,3 +19,4 @@ public class MessageServiceImpl implements MessageService{
         messages.add(message);
     }
 }
+*/

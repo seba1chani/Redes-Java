@@ -1,0 +1,100 @@
+<div class="webrtc-container">
+  <!-- Sidebar usuarios -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>🎤 Usuarios En Línea</h2>
+      <div class="connection-status" [class.connected]="connectionStatus">
+        <span class="status-dot"></span>
+        {{ connectionStatus ? 'Conectado' : 'Desconectado' }}
+      </div>
+    </div>
+
+    <ul class="user-list">
+      <li *ngFor="let user of onlineUsers" 
+          class="user-item"
+          [class.selected]="selectedUser === user"
+          (click)="selectUser(user)">
+        <span class="status-indicator"></span>
+        <span class="user-name">{{ user }}</span>
+      </li>
+    </ul>
+
+    <div class="my-user-info">
+      <small>Tu ID: {{ currentUserId }}</small>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="main-content">
+    <!-- Videos -->
+    <div class="video-container">
+      <div class="video-wrapper local">
+        <video #localVideo class="video-element" autoplay muted playsinline></video>
+        <div class="video-label">Tú</div>
+      </div>
+      <div class="video-wrapper remote" *ngIf="inCall">
+        <video #remoteVideo class="video-element" autoplay playsinline></video>
+        <div class="video-label">{{ selectedUser }}</div>
+      </div>
+      <div *ngIf="!inCall" class="no-call-placeholder">
+        <p>📞 Selecciona un usuario para iniciar una llamada</p>
+      </div>
+    </div>
+
+    <!-- Controles -->
+    <div class="controls-section">
+      <div class="media-controls">
+        <button class="toggle-btn" 
+                [class.active]="audioEnabled"
+                (click)="toggleAudio()"
+                [disabled]="!inCall"
+                title="Alternar Micrófono">
+          {{ audioEnabled ? '🎤' : '🔇' }}
+        </button>
+        <button class="toggle-btn" 
+                [class.active]="videoEnabled"
+                (click)="toggleVideo()"
+                [disabled]="!inCall"
+                title="Alternar Cámara">
+          {{ videoEnabled ? '📹' : '📷' }}
+        </button>
+      </div>
+
+      <div class="call-controls">
+        <button class="btn btn-primary" 
+                (click)="startCall()"
+                [disabled]="inCall || !selectedUser">
+          <span class="icon">📞</span>
+          <span>Llamar</span>
+        </button>
+        <button class="btn btn-danger" 
+                (click)="endCall()"
+                [disabled]="!inCall">
+          <span class="icon">❌</span>
+          <span>Colgar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal llamada entrante -->
+<div class="incoming-call-modal" *ngIf="showIncomingCall">
+  <div class="call-card">
+    <div class="call-header">
+      <h3>📞 Llamada Entrante</h3>
+    </div>
+    <div class="call-info">
+      <p class="caller-name">{{ incomingCallFrom }}</p>
+      <p class="call-type">{{ incomingMediaType || 'Audio y Video' }}</p>
+    </div>
+    <div class="call-actions">
+      <button class="btn btn-success" (click)="acceptCall()">
+        ✓ Aceptar
+      </button>
+      <button class="btn btn-danger" (click)="rejectCall()">
+        ✗ Rechazar
+      </button>
+    </div>
+  </div>
+</div>

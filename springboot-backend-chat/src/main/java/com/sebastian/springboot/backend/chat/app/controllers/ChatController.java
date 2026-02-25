@@ -1,4 +1,4 @@
-package com.sebastian.springboot.backend.chat.app.controllers;
+/*package com.sebastian.springboot.backend.chat.app.controllers;
 
 import com.sebastian.springboot.backend.chat.app.models.Message;
 import com.sebastian.springboot.backend.chat.app.services.MessageService;
@@ -51,3 +51,4 @@ public class ChatController {
         webSocket.convertAndSend("/chat/history/".concat(clientId),service.findAll()) ;
     }
 }
+*/

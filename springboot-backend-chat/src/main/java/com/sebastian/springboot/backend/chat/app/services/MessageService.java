@@ -1,4 +1,4 @@
-package com.sebastian.springboot.backend.chat.app.services;
+/*package com.sebastian.springboot.backend.chat.app.services;
 
 import com.sebastian.springboot.backend.chat.app.models.Message;
 
@@ -8,3 +8,4 @@ public interface MessageService {
     List<Message> findAll();
     void save(Message message);
 }
+*/

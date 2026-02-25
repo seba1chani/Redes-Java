@@ -1,4 +1,4 @@
-package com.sebastian.springboot.backend.chat.app.models;
+/*package com.sebastian.springboot.backend.chat.app.models;
 
 public class Message {
 
@@ -48,3 +48,4 @@ public class Message {
         this.color = color;
     }
 }
+*/
