@@ -1,4 +1,4 @@
-package com.gucardev.springbootwebrtcpeer2peer;
+package com.chani.springbootwebrtcpeer2peer;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

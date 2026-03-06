@@ -1,4 +1,4 @@
-package com.gucardev.springbootwebrtcpeer2peer;
+package com.chani.springbootwebrtcpeer2peer;
 
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;

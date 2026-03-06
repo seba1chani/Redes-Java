@@ -1,4 +1,4 @@
-package com.gucardev.springbootwebrtcpeer2peer;
+package com.chani.springbootwebrtcpeer2peer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
