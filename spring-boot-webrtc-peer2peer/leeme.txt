@@ -1,0 +1,21 @@
+1 instalar docker
+* habilitar la virtualización desde la bios
+
+2 *crear una carpeta llamada ssl dentro del proyecto ( como ya esta creada solo borrar los archivos q están,
+para luego generar credenciales nuevas con su propia ip)
+
+Para generar las credenciales :
+
+ *instalar openSSL
+
+ *agregar a path variable de entorno  C:\Program Files\OpenSSL-Win64\bin
+
+ *en el terminal desde la carpeta del proyecto ingresar:
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/private_key.pem -out ssl/certificate.pem -subj "/C=US/ST=California/L=San Francisco/O=MyOrganization/OU=MyDepartment/CN=<INGRESE SU IP>"
+
+ahora cambiar en el proyecto todos los 192.168.x.x (por la dirección IP de su pc)
+
+*para compilar escribir docker-compose up --build (siempre tener docker desktop abierto)
+
+
