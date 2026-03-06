@@ -7,14 +7,36 @@ const [btnConnect, btnToggleVideo, btnToggleAudio, divRoomConfig, roomDiv, roomN
 let remoteDescriptionPromise, roomName, localStream, remoteStream,
     rtcPeerConnection, isCaller;
 
-const iceServers = {
-  iceServers: [
-    {urls: "stun:stun.l.google.com:19302"},
-    {urls: "stun:stun1.l.google.com:19302"}
-  ]
-};
+// En red local los dispositivos se ven directo, no necesita STUN externo
+const iceServers = { iceServers: [] };
 
 const streamConstraints = {audio: true, video: true};
+
+// Intenta obtener camara y microfono por separado
+// Si falla uno, igual intenta el otro
+async function getMediaStream() {
+  let audioTrack = null;
+  let videoTrack = null;
+
+  try {
+    const audioStream = await navigator.mediaDevices.getUserMedia({audio: true, video: false});
+    audioTrack = audioStream.getAudioTracks()[0];
+  } catch (err) {
+    console.warn("No se pudo acceder al microfono:", err.message);
+  }
+
+  try {
+    const videoStream = await navigator.mediaDevices.getUserMedia({audio: false, video: true});
+    videoTrack = videoStream.getVideoTracks()[0];
+  } catch (err) {
+    console.warn("No se pudo acceder a la camara:", err.message);
+  }
+
+  const stream = new MediaStream();
+  if (audioTrack) stream.addTrack(audioTrack);
+  if (videoTrack) stream.addTrack(videoTrack);
+  return stream;
+}
 
 let socket = io.connect("https://192.168.100.69", {secure: true});
 
@@ -23,13 +45,14 @@ btnToggleAudio.addEventListener("click", () => toggleTrack("audio"));
 
 function toggleTrack(trackType) {
   if (!localStream) {
-    console.log("1");
     return;
   }
-  console.log("2");
 
   const track = trackType === "video" ? localStream.getVideoTracks()[0]
       : localStream.getAudioTracks()[0];
+
+  if (!track) return; // no hay camara/microfono, no hacer nada
+
   const enabled = !track.enabled;
   track.enabled = enabled;
 
@@ -44,7 +67,6 @@ function toggleTrack(trackType) {
       trackType === "video" && !enabled);
   icon.classList.toggle("bi-mic-fill", trackType === "audio" && enabled);
   icon.classList.toggle("bi-mic-mute-fill", trackType === "audio" && !enabled);
-  console.log("3");
 }
 
 btnConnect.onclick = () => {
@@ -62,20 +84,19 @@ const handleSocketEvent = (eventName, callback) => socket.on(eventName,
     callback);
 
 handleSocketEvent("created", e => {
-  navigator.mediaDevices.getUserMedia(streamConstraints).then(stream => {
+  getMediaStream().then(stream => {
     localStream = stream;
     localVideo.srcObject = stream;
     isCaller = true;
-  }).catch(console.error);
+  });
 });
 
 handleSocketEvent("joined", e => {
-  console.log("4");
-  navigator.mediaDevices.getUserMedia(streamConstraints).then(stream => {
+  getMediaStream().then(stream => {
     localStream = stream;
     localVideo.srcObject = stream;
     socket.emit("ready", roomName);
-  }).catch(console.error);
+  });
 });
 
 handleSocketEvent("candidate", e => {
@@ -106,8 +127,7 @@ handleSocketEvent("ready", e => {
     rtcPeerConnection = new RTCPeerConnection(iceServers);
     rtcPeerConnection.onicecandidate = onIceCandidate;
     rtcPeerConnection.ontrack = onAddStream;
-    rtcPeerConnection.addTrack(localStream.getTracks()[0], localStream);
-    rtcPeerConnection.addTrack(localStream.getTracks()[1], localStream);
+    localStream.getTracks().forEach(track => rtcPeerConnection.addTrack(track, localStream));
     rtcPeerConnection
     .createOffer()
     .then(sessionDescription => {
@@ -125,8 +145,7 @@ handleSocketEvent("offer", e => {
     rtcPeerConnection = new RTCPeerConnection(iceServers);
     rtcPeerConnection.onicecandidate = onIceCandidate;
     rtcPeerConnection.ontrack = onAddStream;
-    rtcPeerConnection.addTrack(localStream.getTracks()[0], localStream);
-    rtcPeerConnection.addTrack(localStream.getTracks()[1], localStream);
+    localStream.getTracks().forEach(track => rtcPeerConnection.addTrack(track, localStream));
 
     if (rtcPeerConnection.signalingState === "stable") {
       remoteDescriptionPromise = rtcPeerConnection.setRemoteDescription(
