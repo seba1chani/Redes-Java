@@ -6,9 +6,15 @@ para luego generar credenciales nuevas con su propia ip)
 
 Para generar las credenciales :
 
- *instalar openSSL
+ Descagar OpenSSL
+https://slproweb.com/products/Win32OpenSSL.html
+seleccionar OpenSSl version 4.x.x en adelante y descargar el .exe
 
- *agregar a path variable de entorno  C:\Program Files\OpenSSL-Win64\bin
+*instalar openSSL
+
+ *agregar a path variable de entorno del sistema  C:\Program Files\OpenSSL-Win64\bin
+
+(verificar que funcione) con:  openssl version
 
  *en el terminal desde la carpeta del proyecto ingresar:
 
